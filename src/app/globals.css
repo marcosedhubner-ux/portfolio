@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces);
+}
+
+::selection {
+  background: #e8e6e0;
+  color: #0a0d12;
+}
+
+.bg-dots {
+  background-image: radial-gradient(circle at 1px 1px, rgba(232, 230, 224, 0.16) 1px, transparent 0);
+  background-size: 22px 22px;
+}

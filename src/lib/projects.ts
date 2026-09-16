@@ -67,4 +67,42 @@ export const projects: Project[] = [
   },
 ];
 
+export interface SideProject {
+  slug: string;
+  name: string;
+  tagline: string;
+  stack: string[];
+}
+
+export const sideProjects: SideProject[] = [
+  {
+    slug: "agente-design",
+    name: "Ateliê Azul",
+    tagline:
+      "Desktop AI design mentor (Electron) that shells out to the Claude Code CLI instead of a paid API — screen eyedropper, color wheel, and a local ONNX background remover.",
+    stack: ["Electron", "Claude Code CLI", "sharp", "ONNX"],
+  },
+  {
+    slug: "audiobook-generator",
+    name: "Audiobook Generator",
+    tagline:
+      "Turns PDFs and text files into narrated audiobooks with neural voices, falling back to a fully offline TTS engine mid-narration if the network drops.",
+    stack: ["Node.js", "Express", "Edge TTS", "Piper TTS", "ffmpeg"],
+  },
+  {
+    slug: "mic",
+    name: "Phone Mic Bridge",
+    tagline:
+      "Streams a phone's microphone into a virtual audio cable over USB or password-protected local Wi-Fi, so it shows up as a normal mic in OBS.",
+    stack: ["Python", "WebSocket", "VB-CABLE"],
+  },
+  {
+    slug: "mouseKeeper",
+    name: "MouseKeeper",
+    tagline:
+      "Turns a phone into a Wi-Fi remote for the PC — touchpad with a live screen preview, a real-time keyboard, and a fully customizable on-screen gamepad.",
+    stack: ["Node.js", "WebSocket", "nut-js"],
+  },
+];
+
 export const githubUsername = "marcosedhubner-ux";

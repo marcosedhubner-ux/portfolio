@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { githubUsername, projects } from "@/lib/projects";
+import { ScreenViewer } from "@/components/ScreenViewer";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -24,7 +25,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0a0d12]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <Link href="/" className="font-mono text-xs tracking-widest text-[#e8e6e0]/80">
             MH
           </Link>
@@ -37,7 +38,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
+      <main className="mx-auto max-w-4xl px-6 py-16 sm:py-24">
         <div className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: project.accent }} />
           <span className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/40">
@@ -69,6 +70,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         >
           View source on GitHub &#8599;
         </a>
+
+        <div className="mt-12">
+          <ScreenViewer slug={project.slug} screens={project.screens} accent={project.accent} />
+        </div>
 
         <section className="mt-16 border-t border-white/10 pt-10">
           <h2 className="font-serif text-2xl text-[#f4f2ec]">Why this exists</h2>

@@ -3,6 +3,12 @@ export interface DemoAccount {
   email: string;
 }
 
+export interface Screen {
+  label: string;
+  file: string;
+  path: string;
+}
+
 export interface Project {
   slug: string;
   name: string;
@@ -18,6 +24,7 @@ export interface Project {
   security: string[];
   demoAccounts: DemoAccount[];
   demoPassword: string;
+  screens: Screen[];
 }
 
 export const projects: Project[] = [
@@ -47,6 +54,12 @@ export const projects: Project[] = [
       { role: "Kitchen", email: "kitchen@tableflow.dev" },
     ],
     demoPassword: "Passw0rd!123",
+    screens: [
+      { label: "Sign in", file: "1-login.jpg", path: "tableflow.app/login" },
+      { label: "Floor", file: "2-floor.jpg", path: "tableflow.app/floor" },
+      { label: "Kitchen", file: "3-kitchen.jpg", path: "tableflow.app/kitchen" },
+      { label: "Dashboard", file: "4-dashboard.jpg", path: "tableflow.app/dashboard" },
+    ],
   },
   {
     slug: "shiftboard",
@@ -74,6 +87,12 @@ export const projects: Project[] = [
       { role: "Staff", email: "stylist1@shiftboard.dev" },
     ],
     demoPassword: "Passw0rd!123",
+    screens: [
+      { label: "Sign in", file: "1-login.jpg", path: "shiftboard.app/login" },
+      { label: "Schedule", file: "2-schedule.jpg", path: "shiftboard.app/schedule" },
+      { label: "Team", file: "3-staff.jpg", path: "shiftboard.app/staff" },
+      { label: "Dashboard", file: "4-dashboard.jpg", path: "shiftboard.app/dashboard" },
+    ],
   },
   {
     slug: "stockpilot",
@@ -100,6 +119,12 @@ export const projects: Project[] = [
       { role: "Staff", email: "staff@stockpilot.dev" },
     ],
     demoPassword: "Passw0rd!123",
+    screens: [
+      { label: "Sign in", file: "1-login.jpg", path: "stockpilot.app/login" },
+      { label: "Products", file: "2-products.jpg", path: "stockpilot.app/products" },
+      { label: "Purchase orders", file: "3-purchase-orders.jpg", path: "stockpilot.app/purchase-orders" },
+      { label: "Dashboard", file: "4-dashboard.jpg", path: "stockpilot.app/dashboard" },
+    ],
   },
   {
     slug: "splitledger",
@@ -128,6 +153,12 @@ export const projects: Project[] = [
       { role: "Member", email: "dana@splitledger.dev" },
     ],
     demoPassword: "Passw0rd!123",
+    screens: [
+      { label: "Sign in", file: "1-login.jpg", path: "splitledger.app/login" },
+      { label: "Groups", file: "2-groups.jpg", path: "splitledger.app/groups" },
+      { label: "Balances", file: "3-group-detail.jpg", path: "splitledger.app/groups/lisbon-trip" },
+      { label: "New expense", file: "4-add-expense.jpg", path: "splitledger.app/groups/lisbon-trip" },
+    ],
   },
   {
     slug: "flowboard",
@@ -155,6 +186,10 @@ export const projects: Project[] = [
       { role: "Member", email: "theo@flowboard.dev" },
     ],
     demoPassword: "Passw0rd!123",
+    screens: [
+      { label: "Sign in", file: "1-login.jpg", path: "flowboard.app/login" },
+      { label: "Board", file: "2-board.jpg", path: "flowboard.app/boards/product-launch" },
+    ],
   },
 ];
 

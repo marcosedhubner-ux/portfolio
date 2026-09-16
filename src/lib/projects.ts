@@ -90,13 +90,6 @@ export const sideProjects: SideProject[] = [
     stack: ["Node.js", "Express", "Edge TTS", "Piper TTS", "ffmpeg"],
   },
   {
-    slug: "mic",
-    name: "Phone Mic Bridge",
-    tagline:
-      "Streams a phone's microphone into a virtual audio cable over USB or password-protected local Wi-Fi, so it shows up as a normal mic in OBS.",
-    stack: ["Python", "WebSocket", "VB-CABLE"],
-  },
-  {
     slug: "mouseKeeper",
     name: "MouseKeeper",
     tagline:

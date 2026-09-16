@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { githubUsername, type Project } from "@/lib/projects";
 
 export function ProjectRow({ project, index }: { project: Project; index: number }) {
@@ -14,14 +15,22 @@ export function ProjectRow({ project, index }: { project: Project; index: number
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           <h3 className="font-serif text-2xl text-[#f4f2ec] sm:text-3xl">{project.name}</h3>
-          <a
-            href={`https://github.com/${githubUsername}/${project.slug}`}
-            target="_blank"
-            rel="noreferrer"
-            className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50 transition-colors group-hover:text-[#f4f2ec]"
-          >
-            View code &#8599;
-          </a>
+          <div className="flex gap-5">
+            <Link
+              href={`/projects/${project.slug}`}
+              className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50 transition-colors group-hover:text-[#f4f2ec]"
+            >
+              Case study
+            </Link>
+            <a
+              href={`https://github.com/${githubUsername}/${project.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50 transition-colors group-hover:text-[#f4f2ec]"
+            >
+              View code &#8599;
+            </a>
+          </div>
         </div>
 
         <p className="mt-3 text-base text-[#e8e6e0]/80">{project.tagline}</p>

@@ -203,7 +203,7 @@ export interface SideProject {
 export const sideProjects: SideProject[] = [
   {
     slug: "agente-design",
-    name: "Ateliê Azul",
+    name: "DesignMentor",
     tagline:
       "Desktop AI design mentor (Electron) that shells out to the Claude Code CLI instead of a paid API — screen eyedropper, color wheel, and a local ONNX background remover.",
     stack: ["Electron", "Claude Code CLI", "sharp", "ONNX"],

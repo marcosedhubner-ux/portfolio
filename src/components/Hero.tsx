@@ -7,27 +7,31 @@ export function Hero() {
   const { t } = useLanguage();
 
   return (
-    <section id="top" className="bg-dots relative overflow-hidden border-b border-white/10">
-      <div className="mx-auto max-w-5xl px-6 pb-20 pt-16 sm:pb-28 sm:pt-24">
-        <p className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50">
+    <section id="top" className="relative px-6 pb-24 pt-36 sm:pb-32 sm:pt-44">
+      <div className="mx-auto max-w-4xl">
+        <span className="glass-sm inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest text-[#eef1f8]/65">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#2f6fed] shadow-[0_0_8px_2px_rgba(47,111,237,0.7)]" />
           {t.heroEyebrow}
-        </p>
+        </span>
 
-        <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.1] text-[#f4f2ec] sm:text-6xl">
-          {t.heroHeadingPre} <em className="italic text-[#f4f2ec]/70">{t.heroHeadingEm}</em>{" "}
+        <h1 className="mt-8 max-w-3xl font-serif text-4xl leading-[1.08] text-[#f5f7fc] sm:text-7xl">
+          {t.heroHeadingPre}{" "}
+          <em className="bg-gradient-to-r from-[#7ab0ff] via-[#a48bff] to-[#5be2c9] bg-clip-text italic text-transparent">
+            {t.heroHeadingEm}
+          </em>{" "}
           {t.heroHeadingPost}
         </h1>
 
-        <p className="mt-6 max-w-xl text-base leading-relaxed text-[#e8e6e0]/70 sm:text-lg">
+        <p className="mt-7 max-w-xl text-base leading-relaxed text-[#eef1f8]/65 sm:text-lg">
           {t.heroBody}
         </p>
 
-        <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm text-[#e8e6e0]/70">
+        <div className="mt-10 flex flex-wrap gap-3 font-mono text-xs">
           <a
             href={`https://github.com/${githubUsername}`}
             target="_blank"
             rel="noreferrer"
-            className="underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#f4f2ec] hover:decoration-[#f4f2ec]/60"
+            className="glass-sm rounded-full px-4 py-2 text-[#eef1f8]/75 transition-colors hover:text-[#f5f7fc] hover:border-[#2f6fed]/50"
           >
             github.com/{githubUsername}
           </a>
@@ -35,13 +39,13 @@ export function Hero() {
             href="https://www.linkedin.com/in/marcos-eduardo-leite-hubner-4a0bb0254/"
             target="_blank"
             rel="noreferrer"
-            className="underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#f4f2ec] hover:decoration-[#f4f2ec]/60"
+            className="glass-sm rounded-full px-4 py-2 text-[#eef1f8]/75 transition-colors hover:text-[#f5f7fc] hover:border-[#2f6fed]/50"
           >
             linkedin.com/in/marcos-eduardo-leite-hubner
           </a>
           <a
             href="mailto:marcosedhubner@gmail.com"
-            className="underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#f4f2ec] hover:decoration-[#f4f2ec]/60"
+            className="glass-sm rounded-full px-4 py-2 text-[#eef1f8]/75 transition-colors hover:text-[#f5f7fc] hover:border-[#2f6fed]/50"
           >
             marcosedhubner@gmail.com
           </a>

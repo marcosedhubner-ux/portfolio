@@ -15,10 +15,9 @@ export default function OgImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px",
-          backgroundColor: "#0a0d12",
+          backgroundColor: "#05070d",
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(232,230,224,0.14) 1px, transparent 0)",
-          backgroundSize: "28px 28px",
+            "radial-gradient(circle at 12% 15%, rgba(47,111,237,0.35) 0%, transparent 42%), radial-gradient(circle at 88% 85%, rgba(124,92,255,0.3) 0%, transparent 42%)",
         }}
       >
         <div
@@ -27,7 +26,7 @@ export default function OgImage() {
             fontSize: 22,
             letterSpacing: 4,
             textTransform: "uppercase",
-            color: "rgba(232,230,224,0.55)",
+            color: "rgba(238,241,248,0.55)",
           }}
         >
           MH
@@ -36,14 +35,14 @@ export default function OgImage() {
           <div
             style={{
               fontSize: 64,
-              color: "#e8e6e0",
+              color: "#f5f7fc",
               fontStyle: "italic",
               lineHeight: 1.1,
             }}
           >
             I build the part after the CRUD.
           </div>
-          <div style={{ fontSize: 26, color: "rgba(232,230,224,0.6)", maxWidth: 820 }}>
+          <div style={{ fontSize: 26, color: "rgba(238,241,248,0.6)", maxWidth: 820 }}>
             Five full-stack products built around genuinely hard problems — conflict-free
             scheduling, a concurrency-safe ledger, real-time collaboration.
           </div>

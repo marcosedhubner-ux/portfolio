@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,6 +21,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://marcoshubner.vercel.app"),
   title: "Marcos Hubner — Full-Stack Developer",
   description:
     "Five full-stack products built around genuinely hard problems: conflict-free scheduling, a concurrency-safe inventory ledger, real-time collaboration, fair debt-settlement, and a restaurant order state machine.",
@@ -28,7 +30,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`}>
-      <body className="bg-[#0a0d12] text-[#e8e6e0] antialiased">{children}</body>
+      <body className="bg-[#0a0d12] text-[#e8e6e0] antialiased">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

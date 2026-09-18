@@ -1,15 +1,16 @@
+"use client";
+
 import { githubUsername } from "@/lib/projects";
+import { useLanguage } from "@/lib/i18n";
 
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer id="contact" className="border-t border-white/10">
       <div className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
-        <h2 className="font-serif text-3xl text-[#f4f2ec] sm:text-4xl">
-          Open to remote roles.
-        </h2>
-        <p className="mt-4 max-w-md text-[#e8e6e0]/60">
-          Based in Cachoeirinha, Brazil. Happy to work across time zones.
-        </p>
+        <h2 className="font-serif text-3xl text-[#f4f2ec] sm:text-4xl">{t.footerTitle}</h2>
+        <p className="mt-4 max-w-md text-[#e8e6e0]/60">{t.footerSubtitle}</p>
 
         <div className="mt-8 flex flex-col gap-3 font-mono text-sm text-[#e8e6e0]/70 sm:flex-row sm:gap-8">
           <a
@@ -36,9 +37,7 @@ export function Footer() {
           </a>
         </div>
 
-        <p className="mt-16 font-mono text-[11px] text-[#e8e6e0]/30">
-          Designed and built by Marcos Hubner.
-        </p>
+        <p className="mt-16 font-mono text-[11px] text-[#e8e6e0]/30">{t.footerSignature}</p>
       </div>
     </footer>
   );

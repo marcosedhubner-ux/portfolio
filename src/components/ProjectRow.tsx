@@ -1,7 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { githubUsername, type Project } from "@/lib/projects";
+import { useLanguage } from "@/lib/i18n";
 
 export function ProjectRow({ project, index }: { project: Project; index: number }) {
+  const { lang, t } = useLanguage();
+  const tagline = lang === "pt" ? project.pt.tagline : project.tagline;
+  const detail = lang === "pt" ? project.pt.detail : project.detail;
+
   return (
     <div className="group grid grid-cols-1 gap-4 border-t border-white/10 py-10 sm:grid-cols-[80px_1fr]">
       <div className="flex sm:flex-col sm:items-start sm:gap-3">
@@ -20,7 +27,7 @@ export function ProjectRow({ project, index }: { project: Project; index: number
               href={`/projects/${project.slug}`}
               className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50 transition-colors group-hover:text-[#f4f2ec]"
             >
-              Case study
+              {t.caseStudy}
             </Link>
             <a
               href={`https://github.com/${githubUsername}/${project.slug}`}
@@ -28,13 +35,13 @@ export function ProjectRow({ project, index }: { project: Project; index: number
               rel="noreferrer"
               className="font-mono text-xs uppercase tracking-widest text-[#e8e6e0]/50 transition-colors group-hover:text-[#f4f2ec]"
             >
-              View code &#8599;
+              {t.viewCode}
             </a>
           </div>
         </div>
 
-        <p className="mt-3 text-base text-[#e8e6e0]/80">{project.tagline}</p>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#e8e6e0]/55">{project.detail}</p>
+        <p className="mt-3 text-base text-[#e8e6e0]/80">{tagline}</p>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#e8e6e0]/55">{detail}</p>
 
         <ul className="mt-5 flex flex-wrap gap-2">
           {project.stack.map((tech) => (

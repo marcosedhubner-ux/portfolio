@@ -26,18 +26,16 @@ function seeded(seed: number) {
   return x - Math.floor(x);
 }
 
-// A spider-web crack pattern radiating from an off-center impact point: a
-// handful of angular spokes (jittered so they aren't evenly spaced) cut by a
-// few concentric, also-jittered rings — small angular splinters near the
-// impact point, bigger jagged panes toward the edges, like real shattered glass.
-const IMPACT = { x: 42, y: 38 };
-const SPOKE_COUNT = 11;
-const RING_RADII = [0, 16, 34, 185];
+// One crack, radiating out from a single off-center point, splits the panel
+// into exactly 6 irregular wedges — like a real cracked pane, not a web.
+const IMPACT = { x: 44, y: 40 };
+const PIECE_COUNT = 6;
+const REACH = 190; // far enough past any edge, whatever the panel's aspect ratio
 
 function angleFor(index: number) {
-  const step = 360 / SPOKE_COUNT;
+  const step = 360 / PIECE_COUNT;
   const base = step * index;
-  const jitter = (seeded(index * 7.3 + 1) - 0.5) * step * 0.7;
+  const jitter = (seeded(index * 7.3 + 1) - 0.5) * step * 0.55;
   return ((base + jitter) * Math.PI) / 180;
 }
 
@@ -45,34 +43,35 @@ function pointAt(angle: number, radius: number): [number, number] {
   return [IMPACT.x + Math.cos(angle) * radius, IMPACT.y + Math.sin(angle) * radius];
 }
 
-const SHARDS = (() => {
-  const shards: { key: string; clipPath: string; cx: number; cy: number }[] = [];
-  for (let ring = 0; ring < RING_RADII.length - 1; ring++) {
-    for (let s = 0; s < SPOKE_COUNT; s++) {
-      const seedBase = ring * 97 + s * 13;
-      const a1 = angleFor(s);
-      const a2 = angleFor(s + 1);
-      const r1 = RING_RADII[ring] * (1 + (seeded(seedBase + 2) - 0.5) * 0.3);
-      const r2 = RING_RADII[ring + 1] * (1 + (seeded(seedBase + 3) - 0.5) * 0.22);
+const SHARD_TINTS = [
+  "linear-gradient(135deg, rgba(122,176,255,0.26), rgba(122,176,255,0.06) 70%)",
+  "linear-gradient(135deg, rgba(164,139,255,0.24), rgba(164,139,255,0.05) 70%)",
+  "linear-gradient(135deg, rgba(91,226,201,0.24), rgba(91,226,201,0.05) 70%)",
+  "linear-gradient(135deg, rgba(238,241,248,0.16), rgba(238,241,248,0.03) 70%)",
+  "linear-gradient(135deg, rgba(47,111,237,0.26), rgba(47,111,237,0.06) 70%)",
+  "linear-gradient(135deg, rgba(198,161,255,0.22), rgba(198,161,255,0.04) 70%)",
+];
 
-      const points: [number, number][] =
-        ring === 0
-          ? [[IMPACT.x, IMPACT.y], pointAt(a1, r2), pointAt((a1 + a2) / 2, r2 * 1.06), pointAt(a2, r2)]
-          : [pointAt(a1, r1), pointAt(a2, r1), pointAt(a2, r2), pointAt((a1 + a2) / 2, r2 * 1.04), pointAt(a1, r2)];
+const SHARDS = Array.from({ length: PIECE_COUNT }, (_, i) => {
+  const a1 = angleFor(i);
+  const a2 = angleFor(i + 1);
+  const reach = REACH * (1 + (seeded(i * 9 + 3) - 0.5) * 0.15);
+  const points: [number, number][] = [
+    [IMPACT.x, IMPACT.y],
+    pointAt(a1, reach),
+    pointAt((a1 + a2) / 2, reach * (1 + (seeded(i * 9 + 5) - 0.5) * 0.1)),
+    pointAt(a2, reach),
+  ];
+  const cx = points.reduce((sum, p) => sum + p[0], 0) / points.length;
+  const cy = points.reduce((sum, p) => sum + p[1], 0) / points.length;
 
-      const cx = points.reduce((sum, p) => sum + p[0], 0) / points.length;
-      const cy = points.reduce((sum, p) => sum + p[1], 0) / points.length;
-
-      shards.push({
-        key: `${ring}-${s}`,
-        clipPath: `polygon(${points.map(([x, y]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`).join(", ")})`,
-        cx,
-        cy,
-      });
-    }
-  }
-  return shards;
-})();
+  return {
+    key: `${i}`,
+    clipPath: `polygon(${points.map(([x, y]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`).join(", ")})`,
+    cx,
+    cy,
+  };
+});
 
 export function AboutSection() {
   const { t } = useLanguage();
@@ -127,7 +126,7 @@ export function AboutSection() {
             duration: 1,
             ease: "power3.in",
           },
-          i * 0.018
+          i * 0.06
         );
       });
 
@@ -190,23 +189,18 @@ export function AboutSection() {
         </div>
 
         <div ref={shardsRef} className="pointer-events-none absolute inset-0">
-          {SHARDS.map((s, i) => {
-            const tint = seeded(i * 5.1) > 0.5;
-            return (
-              <div
-                key={s.key}
-                className="absolute inset-0 will-change-transform"
-                style={{
-                  clipPath: s.clipPath,
-                  background: tint
-                    ? "linear-gradient(135deg, rgba(122,176,255,0.2), rgba(164,139,255,0.09) 55%, rgba(91,226,201,0.12))"
-                    : "linear-gradient(135deg, rgba(164,139,255,0.18), rgba(91,226,201,0.1) 55%, rgba(122,176,255,0.12))",
-                  border: "1px solid rgba(238,241,248,0.28)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.16)",
-                }}
-              />
-            );
-          })}
+          {SHARDS.map((s, i) => (
+            <div
+              key={s.key}
+              className="absolute inset-0 will-change-transform"
+              style={{
+                clipPath: s.clipPath,
+                background: SHARD_TINTS[i % SHARD_TINTS.length],
+                border: "1.5px solid rgba(238,241,248,0.45)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
+              }}
+            />
+          ))}
         </div>
       </div>
     </section>

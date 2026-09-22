@@ -16,7 +16,7 @@ Sem backend, sem banco de dados — é uma página estática. Os dados dos proje
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000
+npm run dev   # http://localhost:3025
 ```
 
 ## Deploy

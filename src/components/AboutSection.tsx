@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { animate, stagger } from "animejs";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
 
@@ -16,6 +18,35 @@ const SKILLS = [
 
 export function AboutSection() {
   const { t } = useLanguage();
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    const items = el.querySelectorAll<HTMLElement>("li");
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      items.forEach((item) => (item.style.opacity = "1"));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        animate(items, {
+          opacity: [0, 1],
+          scale: [0.85, 1],
+          translateY: [10, 0],
+          delay: stagger(45),
+          duration: 520,
+          ease: "outExpo",
+        });
+        observer.disconnect();
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="about" className="relative mx-auto max-w-5xl px-6 py-20 sm:py-28">
@@ -28,11 +59,11 @@ export function AboutSection() {
             <p>{t.aboutP2}</p>
             <p>{t.aboutP3}</p>
 
-            <ul className="flex flex-wrap gap-2 pt-2">
+            <ul ref={listRef} className="flex flex-wrap gap-2 pt-2">
               {SKILLS.map((skill) => (
                 <li
                   key={skill}
-                  className="rounded-full border border-white/12 px-2.5 py-1 font-mono text-[11px] text-[#eef1f8]/60 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2f6fed]/50 hover:bg-[#2f6fed]/10 hover:text-[#eef1f8]"
+                  className="rounded-full border border-white/12 px-2.5 py-1 font-mono text-[11px] text-[#eef1f8]/60 opacity-0 transition-[transform,border-color,background-color,color] duration-200 hover:-translate-y-0.5 hover:border-[#2f6fed]/50 hover:bg-[#2f6fed]/10 hover:text-[#eef1f8]"
                 >
                   {skill}
                 </li>

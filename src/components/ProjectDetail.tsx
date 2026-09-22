@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/i18n";
 import { ScreenViewer } from "@/components/ScreenViewer";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { Reveal } from "@/components/Reveal";
+import { MagneticLink } from "@/components/MagneticLink";
 
 export function ProjectDetail({ project }: { project: Project }) {
   const { lang, t } = useLanguage();
@@ -70,23 +71,21 @@ export function ProjectDetail({ project }: { project: Project }) {
           ))}
         </ul>
 
-        <a
+        <MagneticLink
           href={`https://github.com/${githubUsername}/${project.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="glass-sm fade-up mt-8 inline-block rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#f5f7fc] transition-all duration-200 hover:-translate-y-0.5"
+          className="glass-sm fade-up mt-8 inline-block rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#f5f7fc] transition-[background-color,box-shadow] duration-200"
           style={{ animationDelay: "260ms", borderColor: `${project.accent}80` }}
-          onMouseEnter={(e) => {
+          onHoverStart={(e) => {
             e.currentTarget.style.boxShadow = `0 10px 28px -12px ${project.accent}70`;
             e.currentTarget.style.backgroundColor = `${project.accent}14`;
           }}
-          onMouseLeave={(e) => {
+          onHoverEnd={(e) => {
             e.currentTarget.style.boxShadow = "none";
             e.currentTarget.style.backgroundColor = "";
           }}
         >
           {t.viewSourceOnGithub}
-        </a>
+        </MagneticLink>
 
         <Reveal>
           <div

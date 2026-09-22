@@ -1,19 +1,61 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { useLanguage } from "@/lib/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+const SECTION_IDS = ["work", "about", "contact"] as const;
+
+function NavLink({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <a href={href} className="group/nav relative transition-colors duration-200 hover:text-[#eef1f8]">
+    <a
+      href={href}
+      className={`group/nav relative pb-1 transition-colors duration-200 ${
+        active ? "text-[#eef1f8]" : "hover:text-[#eef1f8]"
+      }`}
+    >
       {children}
-      <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#2f6fed] transition-all duration-300 ease-out group-hover/nav:w-full" />
+      <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#2f6fed]/50 transition-all duration-300 ease-out group-hover/nav:w-full" />
+      {active && (
+        <motion.span
+          layoutId="nav-active"
+          className="absolute -bottom-1 left-0 h-px w-full bg-[#2f6fed]"
+          style={{ boxShadow: "0 0 8px 1px rgba(47,111,237,0.7)" }}
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+        />
+      )}
     </a>
   );
 }
 
 export function Nav() {
   const { t } = useLanguage();
+  const [active, setActive] = useState<string>("");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => Boolean(el)
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <header className="fade-up fixed inset-x-0 top-0 z-30 flex justify-center px-4 pt-4 sm:pt-6">
@@ -26,9 +68,15 @@ export function Nav() {
         </a>
         <div className="flex items-center gap-5 sm:gap-7">
           <nav className="hidden gap-6 font-mono text-xs uppercase tracking-widest text-[#eef1f8]/55 sm:flex">
-            <NavLink href="#work">{t.navWork}</NavLink>
-            <NavLink href="#about">{t.navAbout}</NavLink>
-            <NavLink href="#contact">{t.navContact}</NavLink>
+            <NavLink href="#work" active={active === "work"}>
+              {t.navWork}
+            </NavLink>
+            <NavLink href="#about" active={active === "about"}>
+              {t.navAbout}
+            </NavLink>
+            <NavLink href="#contact" active={active === "contact"}>
+              {t.navContact}
+            </NavLink>
           </nav>
           <span className="hidden h-4 w-px bg-white/15 sm:block" />
           <LanguageToggle />

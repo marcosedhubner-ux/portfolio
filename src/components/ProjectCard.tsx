@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { githubUsername, type Project } from "@/lib/projects";
 import { useLanguage } from "@/lib/i18n";
 
@@ -19,47 +20,62 @@ export function ProjectCard({
   const detail = lang === "pt" ? project.pt.detail : project.detail;
   const cover = project.screens[0];
 
-  const imgWrapRef = useRef<HTMLAnchorElement>(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, active: false });
+  const articleRef = useRef<HTMLElement>(null);
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const imgScale = useMotionValue(1);
+  const springRx = useSpring(rx, { stiffness: 220, damping: 20, mass: 0.4 });
+  const springRy = useSpring(ry, { stiffness: 220, damping: 20, mass: 0.4 });
+  const springScale = useSpring(imgScale, { stiffness: 220, damping: 22 });
 
-  function handleMove(e: React.MouseEvent<HTMLAnchorElement>) {
-    const el = imgWrapRef.current;
+  function handleMove(e: React.MouseEvent<HTMLElement>) {
+    const el = articleRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rx: py * -7, ry: px * 9, active: true });
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    rx.set((py - 0.5) * -6);
+    ry.set((px - 0.5) * 8);
+    imgScale.set(1.05);
+    el.style.setProperty("--mx", `${px * 100}%`);
+    el.style.setProperty("--my", `${py * 100}%`);
   }
 
   function handleLeave() {
-    setTilt({ rx: 0, ry: 0, active: false });
+    rx.set(0);
+    ry.set(0);
+    imgScale.set(1);
   }
 
   return (
     <article
+      ref={articleRef}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
       className={`glass group relative flex flex-col overflow-hidden rounded-2xl transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 ${
         featured ? "lg:col-span-2 lg:flex-row" : ""
       }`}
       style={{ boxShadow: `0 0 0 1px ${project.accent}18, 0 20px 60px -24px ${project.accent}40` }}
     >
+      <div
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(480px circle at var(--mx, 50%) var(--my, 50%), ${project.accent}20, transparent 60%)`,
+        }}
+      />
+
       {cover && (
         <Link
-          ref={imgWrapRef}
           href={`/projects/${project.slug}`}
           className={`relative block overflow-hidden [perspective:800px] ${featured ? "lg:w-1/2 lg:shrink-0" : ""}`}
-          onMouseMove={handleMove}
-          onMouseLeave={handleLeave}
         >
-          <img
+          <motion.img
             src={`/screens/${project.slug}/${cover.file}`}
             alt=""
             className={`w-full object-cover object-top opacity-90 will-change-transform ${
               featured ? "h-44 sm:h-52 lg:h-full" : "h-44 sm:h-52"
             }`}
-            style={{
-              transform: `scale(${tilt.active ? 1.06 : 1}) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-              transition: tilt.active ? "transform 120ms ease-out" : "transform 500ms cubic-bezier(0.22,1,0.36,1)",
-            }}
+            style={{ rotateX: springRx, rotateY: springRy, scale: springScale }}
           />
           <div
             className="pointer-events-none absolute inset-0 transition-opacity duration-300"
@@ -76,7 +92,7 @@ export function ProjectCard({
         </Link>
       )}
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="relative z-20 flex flex-1 flex-col p-6">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-[#eef1f8]/30">{String(index + 1).padStart(2, "0")}</span>
           <span

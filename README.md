@@ -16,7 +16,7 @@ No backend, no database — this is a static page. Project data lives in `src/li
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000
+npm run dev   # http://localhost:3025
 ```
 
 ## Deploying

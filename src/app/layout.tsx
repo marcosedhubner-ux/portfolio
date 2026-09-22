@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n";
+import { ParticleField } from "@/components/ParticleField";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <div className="aurora" aria-hidden="true">
           <div className="blob" />
         </div>
-        <LanguageProvider>{children}</LanguageProvider>
+        <ParticleField />
+        <SmoothScroll>
+          <LanguageProvider>{children}</LanguageProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

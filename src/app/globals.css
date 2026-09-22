@@ -18,7 +18,7 @@
 .aurora {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   overflow: hidden;
   background: #05070d;
 }
@@ -133,6 +133,36 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fade-up {
+    animation: none;
+  }
+}
+
+/* ---- Rotating gradient ring (footer CTA) -------------------------------- */
+/* Same shape as the original static gradient border (an outer box's own
+   background, showing only through the 1px padding gap around the glass
+   panel) but with the conic angle animated via @property -- kept as a flat
+   background rather than an oversized layer behind glass, since glass's
+   backdrop-filter: saturate(140%) would otherwise blow out anything placed
+   directly behind it. */
+@property --ring-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.spin-ring-bg {
+  background: conic-gradient(from var(--ring-angle), #2f6fed80, #7c5cff66, #12b8a666, #2f6fed80);
+  animation: spin-ring 9s linear infinite;
+}
+
+@keyframes spin-ring {
+  to {
+    --ring-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-ring-bg {
     animation: none;
   }
 }

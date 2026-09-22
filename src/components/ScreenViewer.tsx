@@ -1,7 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useSpring, type Variants } from "motion/react";
 import type { Screen } from "@/lib/projects";
+
+const screenVariants: Variants = {
+  enter: (d: number) => ({ opacity: 0, x: d * 24 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d: number) => ({ opacity: 0, x: d * -24 }),
+};
 
 export function ScreenViewer({
   slug,
@@ -13,12 +20,17 @@ export function ScreenViewer({
   accent: string;
 }) {
   const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState(1);
   const screen = screens[index];
 
   const frameRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, active: false });
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const springRx = useSpring(rx, { stiffness: 240, damping: 22, mass: 0.4 });
+  const springRy = useSpring(ry, { stiffness: 240, damping: 22, mass: 0.4 });
 
   function go(delta: number) {
+    setDir(delta);
     setIndex((i) => (i + delta + screens.length) % screens.length);
   }
 
@@ -28,11 +40,13 @@ export function ScreenViewer({
     const rect = el.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rx: py * -4, ry: px * 5, active: true });
+    rx.set(py * -4);
+    ry.set(px * 5);
   }
 
   function handleLeave() {
-    setTilt({ rx: 0, ry: 0, active: false });
+    rx.set(0);
+    ry.set(0);
   }
 
   return (
@@ -53,18 +67,22 @@ export function ScreenViewer({
             {screen.path}
           </div>
         </div>
-        <div className="overflow-hidden">
-          <img
-            key={screen.file}
-            src={`/screens/${slug}/${screen.file}`}
-            alt={`${screen.label} screen`}
-            className="w-full origin-top will-change-transform"
-            style={{
-              animation: "fade-up 420ms cubic-bezier(0.22,1,0.36,1) both",
-              transform: `scale(${tilt.active ? 1.015 : 1}) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-              transition: tilt.active ? "transform 150ms ease-out" : "transform 500ms cubic-bezier(0.22,1,0.36,1)",
-            }}
-          />
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait" custom={dir}>
+            <motion.img
+              key={screen.file}
+              custom={dir}
+              variants={screenVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              src={`/screens/${slug}/${screen.file}`}
+              alt={`${screen.label} screen`}
+              className="w-full origin-top will-change-transform"
+              style={{ rotateX: springRx, rotateY: springRy }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            />
+          </AnimatePresence>
         </div>
       </div>
 
@@ -83,7 +101,10 @@ export function ScreenViewer({
             <button
               key={s.file}
               type="button"
-              onClick={() => setIndex(i)}
+              onClick={() => {
+                setDir(i > index ? 1 : -1);
+                setIndex(i);
+              }}
               className="rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5"
               style={
                 i === index

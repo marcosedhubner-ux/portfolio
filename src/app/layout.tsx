@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n";
 import { ParticleField } from "@/components/ParticleField";
@@ -33,6 +34,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`}>
       <body className="overflow-x-hidden text-[#eef1f8] antialiased">
+        <Script id="scroll-to-top" strategy="beforeInteractive">
+          {"try{history.scrollRestoration='manual';window.scrollTo(0,0);}catch(e){}"}
+        </Script>
         <div className="aurora" aria-hidden="true">
           <div className="blob" />
         </div>

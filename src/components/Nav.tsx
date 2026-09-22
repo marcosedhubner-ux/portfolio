@@ -58,7 +58,7 @@ export function Nav() {
   }, []);
 
   return (
-    <header className="fade-up fixed inset-x-0 top-0 z-30 flex justify-center px-4 pt-4 sm:pt-6">
+    <header id="site-nav" className="fade-up fixed inset-x-0 top-0 z-30 flex justify-center px-4 pt-4 sm:pt-6">
       <div className="glass-nav flex w-full max-w-2xl items-center justify-between gap-4 rounded-full px-5 py-3 transition-shadow duration-300 hover:shadow-[0_8px_32px_-12px_rgba(47,111,237,0.35)] sm:px-6">
         <a
           href="#top"

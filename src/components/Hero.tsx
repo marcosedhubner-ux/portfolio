@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { githubUsername } from "@/lib/projects";
 import { useLanguage } from "@/lib/i18n";
@@ -9,38 +9,31 @@ import { MagneticLink } from "./MagneticLink";
 const pillClass =
   "glass-sm rounded-full px-4 py-2 text-[#eef1f8]/75 transition-colors duration-200 ease-out hover:text-[#f5f7fc] hover:border-[#2f6fed]/60 hover:shadow-[0_10px_24px_-12px_rgba(47,111,237,0.55)]";
 
-function maskedWords(text: string) {
-  const words = text.split(" ");
-  return words.map((word, i) => (
-    <Fragment key={i}>
-      <span className="inline-block overflow-hidden pb-1 align-bottom">
-        <span data-word className="inline-block will-change-transform">
-          {word}
-        </span>
-      </span>
-      {i < words.length - 1 ? " " : ""}
-    </Fragment>
-  ));
-}
-
 export function Hero() {
   const { t } = useLanguage();
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    const el = headingRef.current;
-    if (!el) return;
-    const words = el.querySelectorAll<HTMLElement>("[data-word]");
+    const heading = headingRef.current;
+    const subtitle = subtitleRef.current;
+    if (!heading || !subtitle) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(words, { yPercent: 0 });
+      gsap.set([heading, subtitle], { clipPath: "inset(0 0 0 0)", opacity: 1 });
       return;
     }
 
-    gsap.fromTo(
-      words,
-      { yPercent: 120 },
-      { yPercent: 0, duration: 1, ease: "power4.out", stagger: 0.045, delay: 0.15 }
+    const tl = gsap.timeline({ delay: 0.15 });
+    tl.fromTo(
+      heading,
+      { clipPath: "inset(0 100% 0 0)" },
+      { clipPath: "inset(0 0% 0 0)", duration: 1.05, ease: "power4.inOut" }
+    ).fromTo(
+      subtitle,
+      { clipPath: "inset(0 0 0 100%)", opacity: 0 },
+      { clipPath: "inset(0 0 0 0%)", opacity: 1, duration: 0.9, ease: "power4.inOut" },
+      "-=0.2"
     );
   }, []);
 
@@ -59,21 +52,16 @@ export function Hero() {
           ref={headingRef}
           className="mt-8 max-w-3xl font-serif text-4xl leading-[1.08] text-[#f5f7fc] sm:text-7xl"
         >
-          {maskedWords(t.heroHeadingPre)}{" "}
-          <span className="inline-block overflow-hidden pb-1 align-bottom">
-            <em
-              data-word
-              className="inline-block bg-gradient-to-r from-[#7ab0ff] via-[#a48bff] to-[#5be2c9] bg-clip-text italic text-transparent will-change-transform"
-            >
-              {t.heroHeadingEm}
-            </em>
-          </span>{" "}
-          {maskedWords(t.heroHeadingPost)}
+          {t.heroHeadingPre}{" "}
+          <em className="bg-gradient-to-r from-[#7ab0ff] via-[#a48bff] to-[#5be2c9] bg-clip-text italic text-transparent">
+            {t.heroHeadingEm}
+          </em>{" "}
+          {t.heroHeadingPost}
         </h1>
 
         <p
-          className="fade-up mt-7 max-w-xl text-base leading-relaxed text-[#eef1f8]/65 sm:text-lg"
-          style={{ animationDelay: "520ms" }}
+          ref={subtitleRef}
+          className="mt-7 max-w-xl text-base leading-relaxed text-[#eef1f8]/65 sm:text-lg"
         >
           {t.heroBody}
         </p>

@@ -2,13 +2,14 @@
 
 import { githubUsername, sideProjects } from "@/lib/projects";
 import { useLanguage } from "@/lib/i18n";
+import { techColor } from "@/lib/techColors";
 import { Reveal } from "./Reveal";
 
 export function SideProjectsSection() {
   const { lang, t } = useLanguage();
 
   return (
-    <section className="relative mx-auto max-w-5xl px-6 py-20 sm:py-28">
+    <section className="relative mx-auto max-w-5xl px-6 py-14 sm:py-20">
       <Reveal>
         <div className="flex items-baseline justify-between">
           <h2 className="font-serif text-3xl text-[#f5f7fc] sm:text-4xl">{t.alsoBuiltTitle}</h2>
@@ -21,7 +22,7 @@ export function SideProjectsSection() {
 
       <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {sideProjects.map((project, i) => (
-          <Reveal key={project.slug} delay={i * 200}>
+          <Reveal key={project.slug} variant="soft" delay={i * 200} once={false}>
             <a
               href={`https://github.com/${githubUsername}/${project.slug}`}
               target="_blank"
@@ -38,14 +39,18 @@ export function SideProjectsSection() {
                 {lang === "pt" ? project.taglinePt : project.tagline}
               </p>
               <ul className="mt-4 flex flex-wrap gap-2">
-                {project.stack.map((tech) => (
-                  <li
-                    key={tech}
-                    className="rounded-full border border-white/10 px-2.5 py-1 font-mono text-[11px] text-[#eef1f8]/45 transition-colors duration-200 group-hover:border-white/25"
-                  >
-                    {tech}
-                  </li>
-                ))}
+                {project.stack.map((tech) => {
+                  const color = techColor(tech, "#eef1f8");
+                  return (
+                    <li
+                      key={tech}
+                      className="rounded-full border px-2.5 py-1 font-mono text-[11px] transition-colors duration-200"
+                      style={{ borderColor: `${color}35`, color: `${color}cc` }}
+                    >
+                      {tech}
+                    </li>
+                  );
+                })}
               </ul>
             </a>
           </Reveal>

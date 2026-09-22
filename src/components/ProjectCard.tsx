@@ -5,15 +5,18 @@ import Link from "next/link";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { githubUsername, type Project } from "@/lib/projects";
 import { useLanguage } from "@/lib/i18n";
+import { techColor } from "@/lib/techColors";
 
 export function ProjectCard({
   project,
   index,
   featured = false,
+  compact = false,
 }: {
   project: Project;
   index: number;
   featured?: boolean;
+  compact?: boolean;
 }) {
   const { lang, t } = useLanguage();
   const tagline = lang === "pt" ? project.pt.tagline : project.tagline;
@@ -73,7 +76,13 @@ export function ProjectCard({
             src={`/screens/${project.slug}/${cover.file}`}
             alt=""
             className={`w-full object-cover object-top opacity-90 will-change-transform ${
-              featured ? "h-44 sm:h-52 lg:h-full lg:object-right" : "h-44 sm:h-52"
+              featured
+                ? compact
+                  ? "h-32 sm:h-40 lg:h-64 lg:object-right"
+                  : "h-44 sm:h-52 lg:h-full lg:object-right"
+                : compact
+                  ? "h-28 sm:h-32"
+                  : "h-44 sm:h-52"
             }`}
             style={{ rotateX: springRx, rotateY: springRy, scale: springScale }}
           />
@@ -92,7 +101,7 @@ export function ProjectCard({
         </Link>
       )}
 
-      <div className="relative z-20 flex flex-1 flex-col p-6">
+      <div className={`relative z-20 flex flex-1 flex-col ${compact ? "p-4 sm:p-5" : "p-6"}`}>
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-[#eef1f8]/30">{String(index + 1).padStart(2, "0")}</span>
           <span
@@ -103,7 +112,9 @@ export function ProjectCard({
 
         <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
           <Link href={`/projects/${project.slug}`}>
-            <h3 className="font-serif text-2xl text-[#f5f7fc] transition-colors duration-300 group-hover:text-white">
+            <h3
+              className={`font-serif text-[#f5f7fc] transition-colors duration-300 group-hover:text-white ${compact ? "text-xl" : "text-2xl"}`}
+            >
               {project.name}
             </h3>
           </Link>
@@ -133,27 +144,30 @@ export function ProjectCard({
           </div>
         </div>
 
-        <p className="mt-3 text-base text-[#eef1f8]/80">{tagline}</p>
-        <p className="mt-2 text-sm leading-relaxed text-[#eef1f8]/50">{detail}</p>
+        <p className={`mt-3 text-[#eef1f8]/80 ${compact ? "text-sm" : "text-base"}`}>{tagline}</p>
+        {!compact && <p className="mt-2 text-sm leading-relaxed text-[#eef1f8]/50">{detail}</p>}
 
-        <ul className="mt-5 flex flex-wrap gap-2">
-          {project.stack.map((tech) => (
-            <li
-              key={tech}
-              className="rounded-full border px-2.5 py-1 font-mono text-[11px] text-[#eef1f8]/55 transition-all duration-200 hover:-translate-y-0.5"
-              style={{ borderColor: `${project.accent}40` }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = `${project.accent}1a`;
-                e.currentTarget.style.borderColor = `${project.accent}90`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = `${project.accent}40`;
-              }}
-            >
-              {tech}
-            </li>
-          ))}
+        <ul className={`flex flex-wrap gap-2 ${compact ? "mt-3" : "mt-5"}`}>
+          {project.stack.map((tech) => {
+            const color = techColor(tech, project.accent);
+            return (
+              <li
+                key={tech}
+                className="rounded-full border px-2.5 py-1 font-mono text-[11px] transition-all duration-200 hover:-translate-y-0.5"
+                style={{ borderColor: `${color}40`, color: `${color}dd` }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${color}1a`;
+                  e.currentTarget.style.borderColor = `${color}90`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = `${color}40`;
+                }}
+              >
+                {tech}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </article>

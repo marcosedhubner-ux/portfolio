@@ -151,8 +151,9 @@
 }
 
 .spin-ring-bg {
-  background: conic-gradient(from var(--ring-angle), #2f6fed80, #7c5cff66, #12b8a666, #2f6fed80);
+  background: conic-gradient(from var(--ring-angle), #2f6feda0, #7c5cff80, #12b8a680, #2f6feda0);
   animation: spin-ring 9s linear infinite;
+  box-shadow: 0 0 24px -8px rgba(47, 111, 237, 0.4);
 }
 
 @keyframes spin-ring {

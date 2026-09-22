@@ -54,25 +54,41 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
         gsap.set(g, { transformOrigin: "50% 50%", zIndex: i + 1, ...(i === 0 ? HERE : AHEAD) });
       });
 
+      const nav = document.getElementById("site-nav");
+      let navHidden = false;
+      const syncNav = (isActive: boolean) => {
+        if (!nav || isActive === navHidden) return;
+        navHidden = isActive;
+        gsap.to(nav, {
+          autoAlpha: isActive ? 0 : 1,
+          y: isActive ? -16 : 0,
+          duration: 0.3,
+          ease: "power2.out",
+          overwrite: true,
+        });
+      };
+
       const steps = groups.length - 1;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: pinEl,
-          start: "top top+=90",
+          start: "top top+=24",
           end: () => `+=${steps * Math.max(window.innerHeight * 1.5, 900)}`,
           scrub: 0.35,
           pin: true,
           anticipatePin: 1,
+          onUpdate: (self) => syncNav(self.isActive),
+          onRefresh: (self) => syncNav(self.isActive),
         },
       });
 
       for (let i = 0; i < steps; i++) {
         const outgoing = groups[i];
         const incoming = groups[i + 1];
-        tl.to(outgoing, { ...PASSED, ease: "power2.in", duration: 0.48 }, i).to(
+        tl.to(outgoing, { ...PASSED, ease: "power2.in", duration: 0.58 }, i).to(
           incoming,
-          { ...HERE, ease: "power2.out", duration: 0.48 },
-          i + 0.52
+          { ...HERE, ease: "power2.out", duration: 0.58 },
+          i + 0.42
         );
       }
     }, pinEl);
@@ -92,7 +108,7 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
         </span>
       </div>
 
-      <div ref={stageRef} className="relative mt-10">
+      <div ref={stageRef} className="relative mt-6">
         {pairs.map((pair, i) => (
           <div
             key={pair.map((p) => p.slug).join("-")}
@@ -107,6 +123,7 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
                 project={project}
                 index={i * 2 + j}
                 featured={pair.length === 1}
+                compact
               />
             ))}
           </div>

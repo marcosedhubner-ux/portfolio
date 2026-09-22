@@ -19,7 +19,7 @@ const FROM: Record<Variant, gsap.TweenVars> = {
 };
 
 const DURATION: Partial<Record<Variant, number>> = {
-  soft: 1.3,
+  soft: 0.95,
 };
 
 const EASE: Partial<Record<Variant, string>> = {
@@ -31,11 +31,13 @@ export function Reveal({
   delay = 0,
   className = "",
   variant = "up",
+  once = true,
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
   variant?: Variant;
+  once?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -58,17 +60,20 @@ export function Reveal({
         duration: DURATION[variant] ?? 0.9,
         delay: delay / 1000,
         ease: EASE[variant] ?? "power3.out",
-        clearProps: "transform,filter",
+        ...(once ? { clearProps: "transform,filter" } : {}),
         scrollTrigger: {
           trigger: el,
-          start: "top 88%",
-          once: true,
+          start: "top 85%",
+          end: "bottom 20%",
+          once,
+          ...(once ? {} : { toggleActions: "play reverse play reverse" }),
+          fastScrollEnd: true,
         },
       });
     }, ref);
 
     return () => ctx.revert();
-  }, [delay, variant]);
+  }, [delay, variant, once]);
 
   return (
     <div ref={ref} className={className}>

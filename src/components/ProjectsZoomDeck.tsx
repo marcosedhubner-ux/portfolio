@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ProjectCard } from "./ProjectCard";
+import { useLanguage } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 
 if (typeof window !== "undefined") {
@@ -21,14 +22,17 @@ function chunk<T>(items: T[], size: number): T[][] {
 }
 
 export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
+  const { t } = useLanguage();
+  const pinRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const groupRefs = useRef<Array<HTMLDivElement | null>>([]);
   const pairs = chunk(projects, 2);
 
   useLayoutEffect(() => {
+    const pinEl = pinRef.current;
     const stage = stageRef.current;
     const groups = groupRefs.current.filter((g): g is HTMLDivElement => g !== null);
-    if (!stage || groups.length === 0) return;
+    if (!pinEl || !stage || groups.length === 0) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -47,28 +51,14 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
 
     const ctx = gsap.context(() => {
       groups.forEach((g, i) => {
-        gsap.set(g, { transformOrigin: "50% 50%", zIndex: i + 1, ...(i === 0 ? {} : AHEAD) });
+        gsap.set(g, { transformOrigin: "50% 50%", zIndex: i + 1, ...(i === 0 ? HERE : AHEAD) });
       });
-
-      gsap.fromTo(
-        groups[0],
-        { y: 34, scale: 0.94, opacity: 0, filter: "blur(8px)" },
-        {
-          y: 0,
-          scale: 1,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 1.1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: stage, start: "top 88%", once: true },
-        }
-      );
 
       const steps = groups.length - 1;
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: stage,
-          start: "top top+=110",
+          trigger: pinEl,
+          start: "top top+=90",
           end: () => `+=${steps * Math.max(window.innerHeight * 1.5, 900)}`,
           scrub: 0.35,
           pin: true,
@@ -85,7 +75,7 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
           i + 0.52
         );
       }
-    }, stage);
+    }, pinEl);
 
     return () => {
       ctx.revert();
@@ -94,25 +84,34 @@ export function ProjectsZoomDeck({ projects }: { projects: Project[] }) {
   }, [projects]);
 
   return (
-    <div ref={stageRef} className="relative mt-10 overflow-hidden">
-      {pairs.map((pair, i) => (
-        <div
-          key={pair.map((p) => p.slug).join("-")}
-          ref={(el) => {
-            groupRefs.current[i] = el;
-          }}
-          className="absolute inset-x-0 top-0 grid grid-cols-1 gap-6 will-change-transform lg:grid-cols-2"
-        >
-          {pair.map((project, j) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              index={i * 2 + j}
-              featured={pair.length === 1}
-            />
-          ))}
-        </div>
-      ))}
+    <div ref={pinRef}>
+      <div className="flex items-baseline justify-between">
+        <h2 className="font-serif text-3xl text-[#f5f7fc] sm:text-4xl">{t.workTitle}</h2>
+        <span className="font-mono text-xs uppercase tracking-widest text-[#eef1f8]/35">
+          {t.workCount(projects.length)}
+        </span>
+      </div>
+
+      <div ref={stageRef} className="relative mt-10">
+        {pairs.map((pair, i) => (
+          <div
+            key={pair.map((p) => p.slug).join("-")}
+            ref={(el) => {
+              groupRefs.current[i] = el;
+            }}
+            className="absolute inset-x-0 top-0 grid grid-cols-1 gap-6 will-change-transform lg:grid-cols-2"
+          >
+            {pair.map((project, j) => (
+              <ProjectCard
+                key={project.slug}
+                project={project}
+                index={i * 2 + j}
+                featured={pair.length === 1}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

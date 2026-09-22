@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`}>
-      <body className="text-[#eef1f8] antialiased">
+      <body className="overflow-x-hidden text-[#eef1f8] antialiased">
         <div className="aurora" aria-hidden="true">
           <div className="blob" />
         </div>

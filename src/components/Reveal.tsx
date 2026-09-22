@@ -44,7 +44,7 @@ export function Reveal({
     if (!el) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(el, { opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" });
+      gsap.set(el, { opacity: 1, clearProps: "transform,filter" });
       return;
     }
 
@@ -58,6 +58,7 @@ export function Reveal({
         duration: DURATION[variant] ?? 0.9,
         delay: delay / 1000,
         ease: EASE[variant] ?? "power3.out",
+        clearProps: "transform,filter",
         scrollTrigger: {
           trigger: el,
           start: "top 88%",

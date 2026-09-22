@@ -21,7 +21,7 @@ export function SideProjectsSection() {
 
       <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {sideProjects.map((project, i) => (
-          <Reveal key={project.slug} delay={i * 90}>
+          <Reveal key={project.slug} delay={i * 200}>
             <a
               href={`https://github.com/${githubUsername}/${project.slug}`}
               target="_blank"

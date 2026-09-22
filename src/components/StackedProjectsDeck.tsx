@@ -10,6 +10,10 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const BEHIND = { opacity: 0, y: 34, scale: 0.93, filter: "blur(5px)" };
+const FRONT = { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" };
+const RECEDED = { opacity: 0, y: -22, scale: 0.97, filter: "blur(3px)" };
+
 export function StackedProjectsDeck({
   projects,
   startIndex,
@@ -36,19 +40,16 @@ export function StackedProjectsDeck({
     cards.forEach((c) => ro.observe(c));
 
     if (reduced || cards.length < 2) {
-      cards.forEach((c) => gsap.set(c, { opacity: 1, z: 0, y: 0, scale: 1, filter: "blur(0px)" }));
+      cards.forEach((c) => gsap.set(c, FRONT));
       return () => ro.disconnect();
     }
 
     const ctx = gsap.context(() => {
       cards.forEach((card, i) => {
         gsap.set(card, {
+          transformOrigin: "50% 0%",
           zIndex: i + 1,
-          opacity: i === 0 ? 1 : 0,
-          z: i === 0 ? 0 : -520,
-          y: i === 0 ? 0 : 80,
-          scale: i === 0 ? 1 : 0.84,
-          filter: i === 0 ? "blur(0px)" : "blur(12px)",
+          ...(i === 0 ? FRONT : BEHIND),
         });
       });
 
@@ -57,8 +58,8 @@ export function StackedProjectsDeck({
         scrollTrigger: {
           trigger: stage,
           start: "top top+=110",
-          end: () => `+=${steps * Math.max(window.innerHeight * 0.9, 620)}`,
-          scrub: 0.6,
+          end: () => `+=${steps * Math.max(window.innerHeight * 1.4, 820)}`,
+          scrub: 0.35,
           pin: true,
           anticipatePin: 1,
         },
@@ -67,14 +68,10 @@ export function StackedProjectsDeck({
       for (let i = 0; i < steps; i++) {
         const outgoing = cards[i];
         const incoming = cards[i + 1];
-        tl.to(
-          outgoing,
-          { opacity: 0, scale: 0.9, y: -70, filter: "blur(8px)", ease: "power2.inOut", duration: 1 },
-          i
-        ).to(
+        tl.to(outgoing, { ...RECEDED, ease: "power1.in", duration: 0.48 }, i).to(
           incoming,
-          { opacity: 1, z: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power2.out", duration: 1 },
-          i
+          { ...FRONT, ease: "power1.out", duration: 0.48 },
+          i + 0.52
         );
       }
     }, stage);
@@ -86,11 +83,7 @@ export function StackedProjectsDeck({
   }, [projects]);
 
   return (
-    <div
-      ref={stageRef}
-      className="relative mt-2"
-      style={{ perspective: "1800px" }}
-    >
+    <div ref={stageRef} className="relative mt-2">
       {projects.map((project, i) => (
         <div
           key={project.slug}

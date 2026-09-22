@@ -73,7 +73,7 @@ export function ProjectCard({
             src={`/screens/${project.slug}/${cover.file}`}
             alt=""
             className={`w-full object-cover object-top opacity-90 will-change-transform ${
-              featured ? "h-44 sm:h-52 lg:h-full" : "h-44 sm:h-52"
+              featured ? "h-44 sm:h-52 lg:h-full lg:object-right" : "h-44 sm:h-52"
             }`}
             style={{ rotateX: springRx, rotateY: springRy, scale: springScale }}
           />
